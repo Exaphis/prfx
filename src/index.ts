@@ -9,7 +9,7 @@ export interface Env {
 
 router.get("/:prefix", async ({ params }, env: Env, ctx: ExecutionContext) => {
   const prefix = params?.prefix;
-  if (prefix === undefined) {
+  if (!prefix) {
     return error(400, "missing prefix");
   }
 
@@ -49,9 +49,20 @@ router.put(
   "/:key",
   withContent,
   async (request, env: Env, ctx: ExecutionContext) => {
-    console.log(request);
-    console.log(await request.json());
-    // TODO: implement putting url
+    const key = request.params?.key;
+    if (!key) {
+      return error(400, "missing key");
+    }
+
+    const body = await request.json?.();
+    const value = body?.value;
+    if (!value) {
+      return error(400, "malformed body or missing value");
+    }
+
+    console.log(key, value);
+    await env.PRFX_KV.put(key, value);
+    return json({});
   }
 );
 
