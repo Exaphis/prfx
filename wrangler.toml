@@ -1,3 +1,8 @@
 name = "prfx"
 main = "src/index.ts"
 compatibility_date = "2022-08-19"
+
+[[kv_namespaces]]
+  binding = "PRFX_KV"
+  id = "921dd48ec913471e8b554d02b267c970"
+  preview_id = "1e2eef35326b404b9faf95b1e2d8739e"
