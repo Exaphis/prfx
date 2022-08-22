@@ -1,5 +1,6 @@
 import { Router } from "itty-router";
 import { error, json, withContent } from "itty-router-extras";
+import { handleOptions, corsWrapperAsync } from "./corsHelper";
 
 const router = Router();
 
@@ -7,7 +8,7 @@ export interface Env {
   PRFX_KV: KVNamespace;
 }
 
-router.get("/:prefix", async ({ params }, env: Env, ctx: ExecutionContext) => {
+router.get("/:prefix", corsWrapperAsync(async ({ params }, env: Env, ctx: ExecutionContext) => {
   const prefix = params?.prefix;
   if (!prefix) {
     return error(400, "missing prefix");
@@ -43,12 +44,12 @@ router.get("/:prefix", async ({ params }, env: Env, ctx: ExecutionContext) => {
       items: listResult.keys.map((key) => key.name),
     },
   });
-});
+}));
 
 router.put(
   "/:key",
   withContent,
-  async (request, env: Env, ctx: ExecutionContext) => {
+  corsWrapperAsync(async (request, env: Env, ctx: ExecutionContext) => {
     const key = request.params?.key;
     if (!key) {
       return error(400, "missing key");
@@ -64,7 +65,9 @@ router.put(
     await env.PRFX_KV.put(key, value);
     return json({});
   }
-);
+));
+
+router.options("*", handleOptions);
 
 router.all("*", () => error(404, "not found"));
 
