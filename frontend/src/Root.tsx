@@ -1,11 +1,18 @@
 import React from "react";
+import { useSearchParams } from "react-router-dom";
 import { fetcher } from "./Api";
+import PrefixPage from "./Prefix";
 import { ToastType, useToast } from "./ToastContext";
 
 function Root() {
   const [url, setUrl] = React.useState("");
   const [key, setKey] = React.useState("");
   const { addToast } = useToast();
+  const [searchParams] = useSearchParams();
+
+  if (searchParams.has("list")) {
+    return <PrefixPage overridePrefix="" />;
+  }
 
   function putKey() {
     fetcher(`/${key}`, {
@@ -24,7 +31,7 @@ function Root() {
   }
 
   return (
-    <div className="flex flex-col gap-5 w-full h-screen items-center justify-center">
+    <div className="flex flex-col gap-5 w-full min-h-screen items-center justify-center">
       <div className="flex flex-col items-center">
         <h1 className="text-7xl text-blue-700">prfx</h1>
         <h2 className="text-2xl">a prefix-based url shortener</h2>
@@ -65,13 +72,18 @@ function Root() {
           </form>
         </div>
       </div>
-      <p>
-        visit{" "}
-        <a href="/about" className="underline hover:text-blue-700">
-          /about
+      <div className="flex flex-col items-center">
+        <a href="?list" className="text-center underline hover:text-blue-700">
+          view all keys
         </a>{" "}
-        to learn more
-      </p>
+        <p className="text-center">
+          visit{" "}
+          <a href="/about" className="underline hover:text-blue-700">
+            /about
+          </a>{" "}
+          to learn more
+        </p>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { RouteHandler, Request as IttyRequest } from "itty-router";
 // https://developers.cloudflare.com/workers/examples/cors-header-proxy/
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET,HEAD,PUT,OPTIONS",
+  "Access-Control-Allow-Methods": "GET,HEAD,PUT,DELETE,OPTIONS",
   "Access-Control-Max-Age": "86400",
   // Allow all future content Request headers to go back to browser
   // such as Authorization (Bearer) or X-Client-Name-Version
