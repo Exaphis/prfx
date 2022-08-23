@@ -23,7 +23,6 @@ function Root() {
       });
   }
 
-  // TODO: add form validation
   return (
     <div className="flex flex-col gap-5 w-full h-screen items-center justify-center">
       <div className="flex flex-col items-center">
@@ -32,18 +31,14 @@ function Root() {
       </div>
       <div className="card w-86 shadow-xl">
         <div className="card-body">
-          <h2 className="card-title">Add a new URL</h2>
-          <div className="form-control gap-2">
-            <label className="input-group">
-              <span>URL</span>
-              <input
-                type="text"
-                placeholder="https://example.com"
-                className="input input-bordered"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-              />
-            </label>
+          <h2 className="card-title">Add or update a key</h2>
+          <form
+            className="form-control gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              putKey();
+            }}
+          >
             <label className="input-group">
               <span>Key</span>
               <input
@@ -51,11 +46,23 @@ function Root() {
                 placeholder="example"
                 className="input input-bordered"
                 value={key}
+                required
                 onChange={(e) => setKey(e.target.value)}
               />
             </label>
-          </div>
-          <input type="submit" className="btn btn-sm" onClick={putKey} />
+            <label className="input-group">
+              <span>URL</span>
+              <input
+                type="text"
+                placeholder="https://example.com"
+                className="input input-bordered"
+                value={url}
+                required
+                onChange={(e) => setUrl(e.target.value)}
+              />
+            </label>
+            <input type="submit" value="submit" className="btn btn-sm" />
+          </form>
         </div>
       </div>
       <p>
