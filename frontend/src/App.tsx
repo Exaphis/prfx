@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import Prefix from "./Prefix";
+import PrefixPage from "./Prefix";
 import Root from "./Root";
 import { ToastContextProvider } from "./ToastContext";
 
@@ -8,7 +8,7 @@ function App() {
     <ToastContextProvider>
       <Routes>
         <Route path="/" element={<Root />} />
-        <Route path="/:prefix/*" element={<Prefix />} />
+        <Route path="/:prefix/*" element={<PrefixPage />} />
       </Routes>
     </ToastContextProvider>
   );
