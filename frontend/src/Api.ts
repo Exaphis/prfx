@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8787";
+const BASE_URL = process.env.REACT_APP_API_ENDPOINT;
 
 // https://stackoverflow.com/a/63024984/6686559
 type Rest<T extends any[]> = ((...p: T) => void) extends (
