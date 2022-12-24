@@ -33,7 +33,7 @@ function MultiplePrefix(params: { keys: string[] }) {
   }
 
   function deleteKey(key: string) {
-    fetcher(`/${key}`, {
+    fetcher(`/api/${key}`, {
       method: "DELETE",
     })
       .then(() => {
@@ -44,7 +44,7 @@ function MultiplePrefix(params: { keys: string[] }) {
 
         // mutate all prefixes of the key
         for (var l = 0; l <= keys.length; l++) {
-          mutate(`/${key.substring(0, l)}`);
+          mutate(`/api/${key.substring(0, l)}`);
         }
       })
       .catch(() => {
@@ -89,7 +89,7 @@ function MultiplePrefix(params: { keys: string[] }) {
 }
 
 function Prefix({ prefix }: { prefix?: string }) {
-  const { data, error } = useSWR(`/${prefix}`, fetcher);
+  const { data, error } = useSWR(`/api/${prefix}`, fetcher);
 
   if (prefix === undefined) return <p>empty prefix</p>;
   if (error) return <p>failed to load</p>;

@@ -15,7 +15,7 @@ function Root() {
   }
 
   function putKey() {
-    fetcher(`/${key}`, {
+    fetcher(`/api/${key}`, {
       method: "PUT",
       body: JSON.stringify({ value: url }),
     })

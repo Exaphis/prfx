@@ -8,8 +8,11 @@ export interface Env {
   PRFX_KV: KVNamespace;
 }
 
+// TODO: store values in metadata so they can be retrieved in list
+// TODO: add authentication for writes
+
 router.get(
-  "/",
+  "/api",
   corsWrapperAsync(async (request, env: Env, ctx: ExecutionContext) => {
     const listResult = await env.PRFX_KV.list<string>();
     return json({
@@ -21,7 +24,7 @@ router.get(
 );
 
 router.get(
-  "/:prefix",
+  "/api/:prefix",
   corsWrapperAsync(async ({ params }, env: Env, ctx: ExecutionContext) => {
     const prefix = params?.prefix;
     if (!prefix) {
@@ -62,7 +65,7 @@ router.get(
 );
 
 router.put(
-  "/:key",
+  "/api/:key",
   withContent,
   corsWrapperAsync(async (request, env: Env, ctx: ExecutionContext) => {
     const key = request.params?.key;
@@ -76,13 +79,13 @@ router.put(
       return error(400, "malformed body or missing value");
     }
 
-    await env.PRFX_KV.put(key, value);
+    await env.PRFX_KV.put(key, "", { metadata: { value: value } });
     return json({});
   })
 );
 
 router.delete(
-  "/:key",
+  "/api/:key",
   corsWrapperAsync(async (request, env: Env, ctx: ExecutionContext) => {
     const key = request.params?.key;
     if (!key) {
