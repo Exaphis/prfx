@@ -8,16 +8,18 @@ export interface Env {
   PRFX_KV: KVNamespace;
 }
 
-// TODO: store values in metadata so they can be retrieved in list
 // TODO: add authentication for writes
 
 router.get(
   "/api",
   corsWrapperAsync(async (request, env: Env, ctx: ExecutionContext) => {
-    const listResult = await env.PRFX_KV.list<string>();
+    const listResult = await env.PRFX_KV.list<{ value: string }>();
     return json({
       data: {
-        items: listResult.keys.map((key) => key.name),
+        items: listResult.keys.map((key) => ({
+          key: key.name,
+          value: key?.metadata?.value,
+        })),
       },
     });
   })
@@ -43,22 +45,26 @@ router.get(
     }
 
     // otherwise, do a full list operation
-    const listResult = await env.PRFX_KV.list<string>({ prefix: prefix });
+    const listResult = await env.PRFX_KV.list<{ value: string }>({
+      prefix: prefix,
+    });
     if (listResult.keys.length === 0) {
       return error(404, "no keys found");
     }
 
-    if (listResult.keys.length === 1) {
+    const items = listResult.keys.map((key) => ({
+      key: key.name,
+      value: key?.metadata?.value,
+    }));
+
+    if (items.length === 1) {
       return json({
-        data: {
-          key: listResult.keys[0].name,
-          value: await env.PRFX_KV.get(listResult.keys[0].name),
-        },
+        data: items[0],
       });
     }
     return json({
       data: {
-        items: listResult.keys.map((key) => key.name),
+        items,
       },
     });
   })
