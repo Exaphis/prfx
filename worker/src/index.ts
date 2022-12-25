@@ -25,11 +25,12 @@ router.get(
     const target =
       matches.length === 1
         ? matches[0].value
-        : `https://dashboard.prfx.kev3u.com/${prefix}`;
-    return new Response(target, {
-      status: 302,
+        : `https://prfx-dashboard.kev3u.com/${prefix}`;
+    return new Response("", {
+      status: 303,
       headers: {
         "Cache-Control": "max-age=600",
+        Location: target,
       },
     });
   }
