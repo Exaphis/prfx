@@ -1,6 +1,7 @@
 import { Router } from "itty-router";
 import { error, json, withContent } from "itty-router-extras";
 import { handleOptions, corsWrapperAsync } from "./corsHelper";
+import { getMatches } from "./helper";
 
 const router = Router();
 
@@ -9,6 +10,30 @@ export interface Env {
 }
 
 // TODO: add authentication for writes
+
+router.get(
+  "/prefix/:prefix",
+  async ({ params }, env: Env, ctx: ExecutionContext) => {
+    const prefix = params?.prefix;
+    if (!prefix) {
+      return error(400, "missing prefix");
+    }
+
+    const matches = await getMatches(prefix, env.PRFX_KV);
+
+    // add cache-control headers so that the browser will cache the redirect for 10 minutes
+    const target =
+      matches.length === 1
+        ? matches[0].value
+        : `https://dashboard.prfx.kev3u.com/${prefix}`;
+    return new Response(target, {
+      status: 302,
+      headers: {
+        "Cache-Control": "max-age=600",
+      },
+    });
+  }
+);
 
 router.get(
   "/api",
@@ -33,38 +58,18 @@ router.get(
       return error(400, "missing prefix");
     }
 
-    // try to save a list operation if possible
-    const value = await env.PRFX_KV.get(prefix);
-    if (value) {
-      return json({
-        data: {
-          key: prefix,
-          value: value,
-        },
-      });
-    }
-
-    // otherwise, do a full list operation
-    const listResult = await env.PRFX_KV.list<{ value: string }>({
-      prefix: prefix,
-    });
-    if (listResult.keys.length === 0) {
+    const matches = await getMatches(prefix, env.PRFX_KV);
+    if (matches.length === 0) {
       return error(404, "no keys found");
     }
-
-    const items = listResult.keys.map((key) => ({
-      key: key.name,
-      value: key?.metadata?.value,
-    }));
-
-    if (items.length === 1) {
+    if (matches.length === 1) {
       return json({
-        data: items[0],
+        data: matches[0],
       });
     }
     return json({
       data: {
-        items,
+        items: matches,
       },
     });
   })

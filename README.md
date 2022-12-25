@@ -30,4 +30,4 @@ npm start
 
 ## Usage
 
-Visit [https://prfx.kev3u.com](https://prfx.kev3u.com).
+Visit [https://dashboard.prfx.kev3u.com](https://dashboard.prfx.kev3u.com).

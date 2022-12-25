@@ -59,7 +59,7 @@ function MultiplePrefix(params: { pairs: KVPair[] }) {
 
   return (
     <>
-      <h2 className="text-center text-4xl">Multiple prefixes found</h2>
+      <h2 className="text-center text-3xl">Found items</h2>
       <div className="card shadow-xl">
         <table className="table">
           <thead>
@@ -121,24 +121,7 @@ function Prefix({ prefix }: { prefix?: string }) {
   if (data.data.items) {
     return <MultiplePrefix pairs={data.data.items} />;
   }
-  const url = data.data.value;
-  if (url) {
-    window.location.replace(url);
-    // users will stay on this window until the target page loads
-    return (
-      <>
-        <p>
-          Redirecting to{" "}
-          <a href={url} className="underline hover:text-blue-700">
-            {url}
-          </a>
-        </p>
-        <progress className="progress w-56" />
-      </>
-    );
-  }
-
-  return <p>unknown response</p>;
+  return <MultiplePrefix pairs={[data.data]} />;
 }
 
 function PrefixPage({ overridePrefix }: { overridePrefix?: string }) {
